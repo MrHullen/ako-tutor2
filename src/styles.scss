@@ -1,0 +1,28 @@
+@charset 'utf-8';
+
+// Primary font is Bulma default
+
+// Secondary font (headings) is Google's Pacifico
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+$family-secondary: 'Pacifico', sans-serif;
+
+// Icon font is fontawesome
+// Checks for $fa-font-path to see path from global.css to webfonts/
+@import '../node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss';
+@import '../node_modules/@fortawesome/fontawesome-free/scss/solid.scss';
+
+
+// primary colour is brown for reliability
+$french-bistre: #846C5B;
+$primary: $french-bistre;
+
+// Bulma modules
+@import '../node_modules/bulma/sass/utilities/_all.sass';
+@import '../node_modules/bulma/sass/layout/section.sass';
+@import '../node_modules/bulma/sass/elements/content.sass';
+@import '../node_modules/bulma/sass/elements/title.sass';
+@import '../node_modules/bulma/sass/elements/button.sass';
+@import '../node_modules/bulma/sass/helpers/typography.sass';
+@import '../node_modules/bulma/sass/components/navbar.sass';
+
+
