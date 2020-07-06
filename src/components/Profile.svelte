@@ -6,7 +6,7 @@
 </script>
 
 <style>
-  @media screen and (min-device-width: 1200px) {
+  @media screen and (min-width: 1200px) {
     form {
       width: 60%;
       margin: 0 auto;
