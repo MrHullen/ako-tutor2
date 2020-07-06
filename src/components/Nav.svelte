@@ -1,14 +1,13 @@
 <script>
   import { user, page } from '../stores'
-  import { createEventDispatcher } from 'svelte'
+  import { signup, login, logout } from '../firebase'
 
   import About from './About.svelte'
   import Find from './Find.svelte'
   import Profile from './Profile.svelte'
 
-  const dispatch = createEventDispatcher()
-
   // Boolean value for burger menu on mobile
+  // toggled off whenever $page changes
   let active = false
   function toggle() {
     active = !active
@@ -77,19 +76,19 @@
 
             <a
               class="button is-light"
-              on:click={() => { dispatch('logout')}}>
+              on:click={logout}>
               Log out
             </a>
           {:else}
             <a
               class="button is-primary"
-              on:click={() => { dispatch('signup')}}>
+              on:click={signup}>
               Sign up
             </a>
 
             <a
               class="button is-light"
-              on:click={() => { dispatch('login')}}>
+              on:click={login}>
               Log in
             </a>
           {/if}

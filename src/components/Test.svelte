@@ -2,6 +2,8 @@
   import { user } from '../stores'
   import { getAllSubjects, updateProfile } from '../firebase'
 
+  user.set({})
+
   let allSubjects = getAllSubjects()
 </script>
 
