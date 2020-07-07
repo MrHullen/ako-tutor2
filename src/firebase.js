@@ -1,4 +1,5 @@
 import { user, page } from './stores'
+import { get } from 'svelte/store'
 import Profile from './components/Profile.svelte'
 
 import firebase from 'firebase/app'
@@ -34,7 +35,14 @@ export async function signup() {
   // update the user store
   user.set({
       uid: loginData.user.uid,
-      email: loginData.user.email
+      firstName: '',
+      lastName: '',
+      email: loginData.user.email,
+      school: '',
+      Junior: [],
+      'Level 1': [],
+      'Level 2': [],
+      'Level 3': [],
     })
 
   // write user to database
@@ -53,18 +61,14 @@ export async function signup() {
 export async function login() {
   // get the user's data from the login information
   let loginData = await auth.signInWithPopup(googleProvider)
+
   let userRef = await db.collection('users').doc(loginData.user.uid).get()
   let userData = userRef.data()
 
-  // get the subjects the user has opted to tutor in
-  if (userData.subjects) {
-
-  }
-
   // update the user store
   user.set({
-      uid: loginData.user.uid, ...userData
-    })
+    uid: loginData.user.uid,
+    ...userData })
 
   // redirect to the profile page
   page.set(Profile)
@@ -85,10 +89,18 @@ export function logout() {
  * Overwrites the data in the database with the data in the local user variable.
  */
 export function updateProfile() {
-  db.collection('users').doc(user.uid).update({
-      firstName: user.firstName,
-      lastName: user.lastName,
-    })
+  let data = get(user)
+
+  db.collection('users').doc(data.uid).update({
+    firstName: data.firstName,
+    lastName: data.lastName,
+    email: data.email,
+    school: data.school,
+    Junior: data.Junior,
+    'Level 1': data['Level 1'],
+    'Level 2': data['Level 2'],
+    'Level 3': data['Level 3'],
+  })
 }
 
 /* Get All Schools
@@ -121,7 +133,14 @@ export async function getAllSubjects() {
   let allSubjectsRef = await db.collection('subjects').get()
  
   // create a map with level as the key and array of subjects as value, e.g.
-  // key: `Level 1`, value: [ `English`, `Maths`, `Science` ]
+  // |=====================================================|
+  // |  KEY        ||  VALUE                               |
+  // |=============||======================================|
+  // | `Junior`    ||  [ `English`, `Maths`, `Science` ]   |
+  // | `Level 1`   ||  [ `English`, `Maths`, `Science` ]   |
+  // | `Level 2`   ||  [ `English`, `Maths`, `Science` ]   |
+  // | `Level 3`   ||  [ `English`, `Maths`, `Science` ]   |
+  // |=====================================================|
   allSubjectsRef.forEach(subjectRef => {
     let subjectData = subjectRef.data()
     subjectsMap.set(subjectRef.id, subjectData.subjects)

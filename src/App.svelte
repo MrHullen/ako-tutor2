@@ -8,12 +8,14 @@
 	let level
 	let subject
 	let tutor
+	let found = false
 
 	let schools = getAllSchools()
 	let subjects = getAllSubjects()
 
 	function find() {
 		tutor = findTutor(school, level, subject)
+		found = true
 	}
 </script>
 
@@ -24,6 +26,10 @@
       margin: 0 auto;
     }
   }
+
+	form {
+		margin-bottom: 2em;
+	}
 </style>
 
 <svelte:head>
@@ -52,6 +58,8 @@
 								{#each schools as school}
 									<option value={school}>{school}</option>
 								{/each}
+							{:catch error}
+								<option class="is-warning">{error.message}</option>
 							{/await}		
 						</select>
 					</div>
@@ -69,6 +77,8 @@
 								{#each [ ...subjects.keys() ] as level}
 									<option value={level}>{level}</option>
 								{/each}
+							{:catch error}
+								<option class="is-warning">{error.message}</option>
 							{/await}
 						</select>
 					</div>
@@ -84,10 +94,13 @@
 								{#each subjects.get('Level 1') as subject}
 									<option value={subject}>{subject}</option>
 								{/each}
+							{:catch error}
+								<option class="is-warning">{error.message}</option>
 							{/await}
 						</select>
 					</div>
 				</div>
+				
 			</div>
 
 			<div class="field">
@@ -100,15 +113,19 @@
 
 		</form>
 		
-		{#if tutor}
+		{#if found}
 			{#await tutor}
 				<div></div>
 			{:then tutor}
-				<div
-					in:fly="{{ y: 150, duration: 1000 }}">
-					Your recommended tutor is...
-					{tutor.firstName} {tutor.lastName}
-				</div>
+					<div
+						in:fly="{{ y: 150, duration: 1000 }}">
+						{#if tutor}
+							Your recommended tutor is...
+							<strong>{tutor.firstName} {tutor.lastName}</strong>
+						{:else}
+							Sorry! No one has signed up to tutor that yet.
+						{/if}
+					</div>
 			{/await}	
 		{/if}
 	</section>

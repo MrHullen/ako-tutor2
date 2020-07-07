@@ -159,8 +159,8 @@
               <!-- unpack all the subjects at this level into checkboxes -->
               {#each allSubjects.get(level) as subject}
                 <label class="checkbox">
-                  <input type="checkbox" bind:value={subject}>
-                  {subject}
+                  <input type="checkbox" bind:checked={subject.tutoring}>
+                  {subject.name}
                 </label>
               {/each}
             </div>

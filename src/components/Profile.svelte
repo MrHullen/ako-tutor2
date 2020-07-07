@@ -1,8 +1,88 @@
 <script>
   import { user } from '../stores'
-  import { getAllSubjects, updateProfile } from '../firebase'
+  import { onMount } from 'svelte'
+  import { getAllSchools, getAllSubjects, updateProfile } from '../firebase'
 
-  let allSubjects = getAllSubjects()
+  let allSubjects = new Map()
+  let schools = getAllSchools()
+
+  onMount(async () => {
+    allSubjects = await getAllSubjects()
+
+    // change each array item to the subject and a Boolean for tutoring opt-in
+    let levelSubjects
+    
+    levelSubjects = allSubjects.get('Junior')
+    levelSubjects.forEach((subject, index) => {
+      let tutoring = $user.Junior.includes(subject)
+      levelSubjects[index] = { name: subject, tutoring: tutoring }
+    })
+    allSubjects.set('Junior', levelSubjects)
+
+    levelSubjects = allSubjects.get('Level 1')
+    levelSubjects.forEach((subject, index) => {
+      let tutoring = $user['Level 1'].includes(subject)
+      levelSubjects[index] = { name: subject, tutoring: tutoring }
+    })
+    allSubjects.set('Level 1', levelSubjects)
+
+    levelSubjects = allSubjects.get('Level 2')
+    levelSubjects.forEach((subject, index) => {
+      let tutoring = $user['Level 2'].includes(subject)
+      levelSubjects[index] = { name: subject, tutoring: tutoring }
+    })
+    allSubjects.set('Level 2', levelSubjects)
+
+    levelSubjects = allSubjects.get('Level 3')
+    levelSubjects.forEach((subject, index) => {
+      let tutoring = $user['Level 3'].includes(subject)
+      levelSubjects[index] = { name: subject, tutoring: tutoring }
+    })
+    allSubjects.set('Level 3', levelSubjects)
+  })
+
+  function saveChanges() {
+    let pageSubjects
+    let saveSubjects = []
+    
+    pageSubjects = allSubjects.get('Junior')
+    pageSubjects.forEach((subject) => {
+      if (subject.tutoring) {
+        saveSubjects.push(subject.name)
+      }
+    })
+    $user.Junior = saveSubjects
+    saveSubjects = []
+
+    pageSubjects = allSubjects.get('Level 1')
+    pageSubjects.forEach((subject) => {
+      if (subject.tutoring) {
+        saveSubjects.push(subject.name)
+      }
+    })
+    $user['Level 1'] = saveSubjects
+    saveSubjects = []
+
+    pageSubjects = allSubjects.get('Level 2')
+    pageSubjects.forEach((subject) => {
+      if (subject.tutoring) {
+        saveSubjects.push(subject.name)
+      }
+    })
+    $user['Level 2'] = saveSubjects
+    saveSubjects = []
+
+    pageSubjects = allSubjects.get('Level 3')
+    pageSubjects.forEach((subject) => {
+      if (subject.tutoring) {
+        saveSubjects.push(subject.name)
+      }
+    })
+    $user['Level 3'] = saveSubjects
+    saveSubjects = []
+
+    updateProfile()
+  }
 </script>
 
 <style>
@@ -22,7 +102,7 @@
 
 <h1 class="title has-text-centered">Profile</h1>
 
-<form class="section" on:submit|preventDefault={updateProfile}>
+<form class="section" on:submit|preventDefault={saveChanges}>
   
   <h2 class="subtitle">About</h2>
 
@@ -100,7 +180,20 @@
           {#if $user.school}
             <input class="input is-success" readonly bind:value={$user.school}>
           {:else}
-            <input class="input" bind:value={$user.school}>
+            <div class="select is-fullwidth is-medium">
+              <select bind:value={$user.school}>
+                <option value="" disabled selected>Choose your school</option>
+                {#await schools}
+                  <option value="loading">Loading schools...</option>
+                {:then schools}
+                  {#each schools as school}
+                    <option value={school}>{school}</option>
+                  {/each}
+                {:catch error}
+                  <option class="is-warning">{error.message}</option>
+                {/await}
+              </select>
+            </div>
           {/if}
           <span class="icon is-small is-left">
             <i class="fas fa-envelope"></i>
@@ -108,10 +201,6 @@
           {#if $user.school}
             <span class="icon is-small is-right">
               <i class="fas fa-check"></i>
-            </span>
-          {:else}
-            <span class="icon is-small is-right">
-              <i class="fas fa-exclamation-triangle"></i>
             </span>
           {/if}
         </p>
@@ -157,8 +246,8 @@
               <!-- unpack all the subjects at this level into checkboxes -->
               {#each allSubjects.get(level) as subject}
                 <label class="checkbox">
-                  <input type="checkbox" bind:value={subject}>
-                  {subject}
+                  <input type="checkbox" bind:checked={subject.tutoring}>
+                  {subject.name}
                 </label>
               {/each}
             </div>
@@ -167,4 +256,10 @@
       </div>
     {/each}
   {/await}
+
+  <button
+    class="button is-success"
+    type="submit">
+    Save changes
+  </button>
 </form>
