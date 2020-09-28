@@ -1,6 +1,5 @@
 import { user, page } from './stores'
 import { get } from 'svelte/store'
-import Profile from './components/Profile.svelte'
 
 import firebase from 'firebase/app'
 import 'firebase/auth'
@@ -28,7 +27,7 @@ const db = firebase.firestore()
  * Writes the user's email to the database to create a new user, then
  * Redirects to the Profile page.
  */
-export async function signup() {
+export async function signup(nextPage = undefined) {
   // login
   let loginData = await auth.signInWithPopup(googleProvider)
 
@@ -50,15 +49,15 @@ export async function signup() {
       email: loginData.user.email
     })
 
-  // redirect to the profile page
-  page.set(Profile)
+  // redirect to the page sent as an argument (undefined is home)
+  page.set(nextPage)
 }
 
 /* Login
  * Logs the user into the provider with a pop-up, then
  * Redirects to the Profile page.
  */
-export async function login() {
+export async function login(nextPage = undefined) {
   // get the user's data from the login information
   let loginData = await auth.signInWithPopup(googleProvider)
 
@@ -70,8 +69,8 @@ export async function login() {
     uid: loginData.user.uid,
     ...userData })
 
-  // redirect to the profile page
-  page.set(Profile)
+  // redirect to the page sent as an argument (undefined is home)
+  page.set(nextPage)
 }
 
 /* Logout

@@ -14,7 +14,7 @@
     
     levelSubjects = allSubjects.get('Junior')
     levelSubjects.forEach((subject, index) => {
-      let tutoring = $user.Junior.includes(subject)
+      let tutoring = $user['Junior'].includes(subject)
       levelSubjects[index] = { name: subject, tutoring: tutoring }
     })
     allSubjects.set('Junior', levelSubjects)
@@ -108,12 +108,12 @@
 
   <div class="field is-horizontal">
     <div class="field-label is-normal">
-      <label class="label">Name</label>
+      <label for="name" class="label">Name</label>
     </div>
     <div class="field-body">
       <div class="field">
         <p class="control is-expanded has-icons-left has-icons-right">
-          <input class="input" type="text" placeholder="First" bind:value={$user.firstName}>
+          <input id="name" class="input" type="text" placeholder="First" bind:value={$user.firstName}>
           <span class="icon is-small is-left">
             <i class="fas fa-user"></i>
           </span>
@@ -152,12 +152,12 @@
 
   <div class="field is-horizontal">
     <div class="field-label">
-      <label class="label">Email</label>
+      <label for="email" class="label">Email</label>
     </div>
     <div class="field-body">
       <div class="field">
         <p class="control has-icons-left has-icons-right">
-          <input class="input is-success" type="email" readonly bind:value={$user.email}>
+          <input id="email" class="input is-success" type="email" readonly bind:value={$user.email}>
           <span class="icon is-small is-left">
             <i class="fas fa-envelope"></i>
           </span>
@@ -172,13 +172,13 @@
 
   <div class="field is-horizontal">
     <div class="field-label">
-      <label class="label">School</label>
+      <label for="school" class="label">School</label>
     </div>
     <div class="field-body">
       <div class="field">
         <p class="control has-icons-left has-icons-right">
           {#if $user.school}
-            <input class="input is-success" readonly bind:value={$user.school}>
+            <input id="school" class="input is-success" readonly bind:value={$user.school}>
           {:else}
             <div class="select is-fullwidth is-medium">
               <select bind:value={$user.school}>
@@ -219,12 +219,12 @@
   {#await allSubjects}
     <div class="field is-horizontal">
       <div class="field-label">
-        <label class="label">
+        <span class="label">
           <span class="icon">
             <i class="fa fa-cog fa-spin"></i>
-            <span class="sr-only">Loading...</span>
+            <span class="sr-only">Subjects</span>
           </span>
-        </label>
+        </span>
       </div>
       <div class="field-body">
         <span class="icon">
@@ -238,15 +238,15 @@
     {#each [ ...allSubjects.keys() ] as level}
       <div class="field is-horizontal">
         <div class="field-label">
-          <label class="label">{level}</label>
+          <label for="{level}" class="label">{level}</label>
         </div>
         <div class="field-body">
           <div class="field is-grouped">
-            <div class="control checkbox-group">
+            <div id="{level}" class="control checkbox-group">
               <!-- unpack all the subjects at this level into checkboxes -->
               {#each allSubjects.get(level) as subject}
-                <label class="checkbox">
-                  <input type="checkbox" bind:checked={subject.tutoring}>
+                <label for={subject.name} class="checkbox">
+                  <input id={subject.name} type="checkbox" bind:checked={subject.tutoring}>
                   {subject.name}
                 </label>
               {/each}

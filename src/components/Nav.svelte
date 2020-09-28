@@ -20,9 +20,9 @@
   <div class="navbar-brand">
     <a
     class="navbar-item has-text-primary is-family-secondary is-size-3"
-    class:is-active={page === undefined}
-    aria-current={page === undefined ? 'page' : undefined}
-    on:click={() => { $page = undefined; active = false; }}>
+    class:is-active={page === Find}
+    aria-current={page === Find ? 'page' : undefined}
+    on:click={() => { $page = Find; active = false; }}>
       Ako Tutor
     </a>
 
@@ -52,14 +52,6 @@
         About
       </a>
 
-      <a
-        class="navbar-item"
-        class:is-active={$page === Find}
-        aria-current={$page === Find ? 'page' : undefined}
-        on:click={() => { $page = Find; active = false; }}>
-        Find
-      </a>
-
     </div>
 
     <div class="navbar-end">
@@ -82,13 +74,13 @@
           {:else}
             <a
               class="button is-primary"
-              on:click={signup}>
+              on:click={() => { active = false; signup(Profile) }}>
               Sign up
             </a>
 
             <a
               class="button is-light"
-              on:click={login}>
+              on:click={() => { active = false; login(Profile) }}>
               Log in
             </a>
           {/if}
