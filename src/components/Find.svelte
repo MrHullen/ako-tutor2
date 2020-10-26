@@ -61,7 +61,7 @@
       <div class="control is-expanded">
         <div class="select is-fullwidth is-medium">
           <select bind:value={level}>
-            <option value="" disabled selected>Choose your level</option>
+            <option value="" disabled selected>your level</option>
             {#await subjects}
               <option value="loading">Loading levels...</option>
             {:then subjects}
@@ -78,7 +78,7 @@
       <div class="control is-expanded">
         <div class="select is-fullwidth is-medium">
           <select bind:value={subject}>
-            <option value="" disabled selected>Choose your subject</option>
+            <option value="" disabled selected>and subject</option>
             {#await subjects}
               <option value="loading">Loading subjects...</option>
             {:then subjects}

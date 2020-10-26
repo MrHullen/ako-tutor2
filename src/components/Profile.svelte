@@ -6,39 +6,92 @@
   let allSubjects = new Map()
   let schools = getAllSchools()
 
+  /* Populate the Levels/Subjects checkboxes
+   * This function uses the data from the user's document on the database to
+   * create and populate the checkbox array. The array represensts whether the
+   * student is keen to tutor in that subject at that level.
+   */
   onMount(async () => {
     allSubjects = await getAllSubjects()
 
     // change each array item to the subject and a Boolean for tutoring opt-in
     let levelSubjects
+
+    // check that the database returned something to work with
+    if (allSubjects) {
+      // working one level at a time
+      levelSubjects = allSubjects.get('Junior')
+      /* if the user's profile (loaded when they logged in) contains an array
+       * for that level. This statement is to catch the case when users login
+       * rather than sign up.
+       */
+      if ($user['Junior']) {
+        // loop through that level's subjects
+        levelSubjects.forEach((subject, index) => {
+          // confirm whether the tutor has opted into this subject
+          let tutoring = $user['Junior'].includes(subject)
+          // either way, add the subject name and tutoring Boolean
+          levelSubjects[index] = { name: subject, tutoring: tutoring }
+        })
+      // if the user didn't sign up their profile won't contain the array
+      } else {
+        // create an array of unchecked options
+        levelSubjects.forEach((subject, index) => {
+          let tutoring = false
+          levelSubjects[index] = { name: subject, tutoring: tutoring }
+        })
+      }
+      allSubjects.set('Junior', levelSubjects)
+
+      // repeat the above for Level 1, 2, and 3
+
+      levelSubjects = allSubjects.get('Level 1')
+      if ($user['Level 1']) {
+        levelSubjects.forEach((subject, index) => {
+          let tutoring = $user['Level 1'].includes(subject)
+          levelSubjects[index] = { name: subject, tutoring: tutoring }
+        })
+      } else {
+        levelSubjects.forEach((subject, index) => {
+          let tutoring = false
+          levelSubjects[index] = { name: subject, tutoring: tutoring }
+        })
+      }
+      allSubjects.set('Level 1', levelSubjects)
+
+      levelSubjects = allSubjects.get('Level 2')
+      if ($user['Level 2']) {
+        levelSubjects.forEach((subject, index) => {
+          let tutoring = $user['Level 2'].includes(subject)
+          levelSubjects[index] = { name: subject, tutoring: tutoring }
+        })
+      } else {
+        levelSubjects.forEach((subject, index) => {
+          let tutoring = false
+          levelSubjects[index] = { name: subject, tutoring: tutoring }
+        })
+      }
+      allSubjects.set('Level 2', levelSubjects)
+
+      levelSubjects = allSubjects.get('Level 3')
+      if ($user['Level 3']) {
+        levelSubjects.forEach((subject, index) => {
+          let tutoring = $user['Level 3'].includes(subject)
+          levelSubjects[index] = { name: subject, tutoring: tutoring }
+        })
+      } else {
+        levelSubjects.forEach((subject, index) => {
+          let tutoring = false
+          levelSubjects[index] = { name: subject, tutoring: tutoring }
+        })
+      }
+      allSubjects.set('Level 3', levelSubjects)
+
+    } else {
+      console.error('There was a problem retrieving the subjects.')
+    }
     
-    levelSubjects = allSubjects.get('Junior')
-    levelSubjects.forEach((subject, index) => {
-      let tutoring = $user['Junior'].includes(subject)
-      levelSubjects[index] = { name: subject, tutoring: tutoring }
-    })
-    allSubjects.set('Junior', levelSubjects)
-
-    levelSubjects = allSubjects.get('Level 1')
-    levelSubjects.forEach((subject, index) => {
-      let tutoring = $user['Level 1'].includes(subject)
-      levelSubjects[index] = { name: subject, tutoring: tutoring }
-    })
-    allSubjects.set('Level 1', levelSubjects)
-
-    levelSubjects = allSubjects.get('Level 2')
-    levelSubjects.forEach((subject, index) => {
-      let tutoring = $user['Level 2'].includes(subject)
-      levelSubjects[index] = { name: subject, tutoring: tutoring }
-    })
-    allSubjects.set('Level 2', levelSubjects)
-
-    levelSubjects = allSubjects.get('Level 3')
-    levelSubjects.forEach((subject, index) => {
-      let tutoring = $user['Level 3'].includes(subject)
-      levelSubjects[index] = { name: subject, tutoring: tutoring }
-    })
-    allSubjects.set('Level 3', levelSubjects)
+    
   })
 
   function saveChanges() {
@@ -152,18 +205,46 @@
 
   <div class="field is-horizontal">
     <div class="field-label">
-      <label for="email" class="label">Email</label>
+      <label for="login-email" class="label">Login Email</label>
     </div>
     <div class="field-body">
       <div class="field">
         <p class="control has-icons-left has-icons-right">
-          <input id="email" class="input is-success" type="email" readonly bind:value={$user.email}>
+          <input id="login-email" class="input is-success" type="email" readonly bind:value={$user.email}>
           <span class="icon is-small is-left">
             <i class="fas fa-envelope"></i>
           </span>
           <span class="icon is-small is-right">
             <i class="fas fa-check"></i>
           </span>
+        </p>
+        <br>
+      </div>
+    </div>
+  </div>
+
+  <div class="field is-horizontal">
+    <div class="field-label">
+      <label for="school-email" class="label">School Email</label>
+    </div>
+    <div class="field-body">
+      <div class="field">
+        <p class="control has-icons-left has-icons-right">
+          <span class="icon is-small is-left">
+            <i class="fas fa-envelope"></i>
+          </span>
+          {#if $user.schoolEmail}
+            <input id="school-email" class="input is-success" type="email" bind:value={$user.schoolEmail}>
+            <span class="icon is-small is-right">
+              <i class="fas fa-check"></i>
+            </span>
+          {:else}
+            <input id="school-email" class="input is-success" type="email" placeholder="school email" bind:value={$user.schoolEmail}>
+            <span class="icon is-small is-right">
+              <i class="fas fa-exclamation-triangle"></i>
+            </span>
+            <p class="help is-danger">Add your school email fo people to contact you</p>
+          {/if}
         </p>
         <br>
       </div>
@@ -245,8 +326,8 @@
             <div id="{level}" class="control checkbox-group">
               <!-- unpack all the subjects at this level into checkboxes -->
               {#each allSubjects.get(level) as subject}
-                <label for={subject.name} class="checkbox">
-                  <input id={subject.name} type="checkbox" bind:checked={subject.tutoring}>
+                <label for={level + subject.name} class="checkbox">
+                  <input id={level + subject.name} type="checkbox" bind:checked={subject.tutoring}>
                   {subject.name}
                 </label>
               {/each}

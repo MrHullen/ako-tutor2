@@ -32,7 +32,11 @@
           <button class="button is-primary" on:click={ () => { signup(Find)} }>Sign up</button>
           <button class="button is-light" on:click={ () => { login(Find)} }>Log in</button>
         {:else}
-          <p>Email <strong>{tutor.email}</strong> to arrange a tutoring session.</p>
+          {#if tutor.schoolEmail}
+            <p>Email <strong>{tutor.schoolEmail}</strong> to arrange a tutoring session.</p>
+          {:else}
+            <p>Email <strong>{tutor.email}</strong> to arrange a tutoring session.</p>
+          {/if}
         {/if}
       </div>
     </div>
