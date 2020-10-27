@@ -94,6 +94,7 @@ export function updateProfile() {
     firstName: data.firstName,
     lastName: data.lastName,
     email: data.email,
+    schoolEmail: data.schoolEmail,
     school: data.school,
     Junior: data.Junior,
     'Level 1': data['Level 1'],

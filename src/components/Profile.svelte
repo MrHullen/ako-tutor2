@@ -146,10 +146,8 @@
     }
   }
 
-  .checkbox-group {
-    display: grid;
-    grid-gap: 20px;
-    grid-template-columns: repeat(3, auto); 
+  .checkbox-group label {
+    margin-right: 1em;
   }
 </style>
 

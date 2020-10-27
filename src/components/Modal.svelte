@@ -40,5 +40,5 @@
         {/if}
       </div>
     </div>
-    <button class="modal-close is-large" aria-label="close"></button>
+    <button class="modal-close is-large" aria-label="close" on:click={toggleModal}></button>
   </div>

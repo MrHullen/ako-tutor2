@@ -21,4 +21,3 @@
 		<p>An error ocurred. I don't know why.</p>
 	{/if}
 </main>
-
